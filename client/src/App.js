@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import axios from './config/axios'
+import React, { lazy, Suspense } from 'react'
+import { Route, Switch } from 'react-router-dom'
+
+const HomePage = lazy(() => import('./pages/homePage'));
+const RegisterPage = lazy(() => import('./pages/register'));
+const LoginPage = lazy(() => import('./pages/login'));
 
 const App = () => {
-  const [data, setData] = useState([])
-  useEffect(() => {
-    const response = axios.get("user/getUser").then((res) => {
-      console.log(res);
-      setData(res.data)
-    }).catch((err) => {
-      console.log(err);
-    })
-    return response
-  }, [])
   return (
-    <div>
-      {data}
-    </div>
+    <Suspense fallback={() => (<div>...loading</div>)}>
+      <Switch>
+        <Route exact path='/' component={HomePage} />
+        <Route exact path='/register' component={RegisterPage} />
+        <Route exact path='/login' component={LoginPage} />
+      </Switch>
+    </Suspense>
   )
 }
+
 
 export default App
