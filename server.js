@@ -13,7 +13,7 @@ const compress = require("compression");
 const app = express();
 
 const {connectdb} = require("./server/config/database.config");
-
+const userRoute = require("./server/routers/router")
 //environments
 const PORT = process.env.PORT || 8989;
 const env = process.env.NODE_ENV
@@ -30,7 +30,7 @@ app.use(compress());
 app.use(paginate.middleware(process.env.LIMIT,process.env.MAX_LIMIT))
 
 //routes
-
+app.use("/api/v1/user", userRoute)
 
 //static file setup
 if (env === "production") {
