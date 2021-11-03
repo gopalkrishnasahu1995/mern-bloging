@@ -21,7 +21,7 @@ const RegisterPage = () => {
         <Row gutter={24}>
             <Col span={24}>Register Page</Col>
             <Col span={8}>
-                <label htmlFor="email">username</label>
+                <label htmlFor="email">Username</label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} />
                 <label htmlFor="email">email</label>
                 <Input value={email} onChange={(e) => setEmail(e.target.value)} />

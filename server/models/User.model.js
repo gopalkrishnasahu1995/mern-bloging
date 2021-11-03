@@ -4,14 +4,31 @@ const UserSchema = new Schema({
     name: {
         type: String,
         required: [true, 'name is required'],
+        trim: true,
+        maxlength: [20, 'Your name is upto 20 character long']
     },
-    email: {
+    account: {
         type: String,
-        required: [true, 'email is required'],
+        required: [true, 'please add your email or phone'],
+        trim:true,
+        unique:true
     },
-    password: {
-        type: String,
-        required: [true, 'password is required']
+    password:{
+        type:String,
+        required:[true,'password is required'],
+        trim:true
+    },
+    avatar:{
+        type:String,
+        default:''
+    },
+    type:{
+        type:String,
+        default:'normal'
+    },
+    role:{
+        type:String,
+        default:'user'
     }
 }, { timestamps: true })
 

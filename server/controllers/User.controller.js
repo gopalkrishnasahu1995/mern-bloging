@@ -1,57 +1,50 @@
 const User = require('../models/User.model')
+const asyncHandler = require('../middlewares/async')
+const nodemailer = require('../services/nodemailer.service')
+const { generateToken } = require('../utils/jwt')
+const {
+    ReasonPhrases,
+    StatusCodes,
+    getReasonPhrase,
+    getStatusCode,
+} = require('http-status-codes');
+const bcrypt = require('bcrypt')
 
-exports.createUser = async (req, res) => {
-    const { name, email, password } = req.body
+const register = asyncHandler(async (req, res) => {
+    try {
+        const { name, account, password } = req.body;
+        // check exit user
+        const userExists = await User.findOne({ account });
+        if (userExists) {
+            res.status(StatusCodes.BAD_REQUEST).json({
+                error: getReasonPhrase(StatusCodes.BAD_REQUEST),
+                message: 'User is already exists'
+            });
+        }
 
-    const checkExist = await User.findOne({ email })
-    if (checkExist) {
-        return res.status(400).json({
-            status: 'failed',
-            message: 'user already exists'
+        const passwordHash = await bcrypt.hash(password, 12)
+
+        const newUser = new User({
+            name, account, password: passwordHash
         })
+
+        const token = generateToken({name,account,password})
+
+        res.status(StatusCodes.OK).json({
+            status: ReasonPhrases.OK,
+            message: 'Register Successful',
+            data: newUser,
+            activeToken:token
+        })
+
+    } catch (err) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+            message: err.message
+        });
     }
+})
 
-    const user = new User({
-        name, email, password
-    })
-
-    await user.save()
-
-    return res.status(201).json({
-        message: 'success',
-        data: user
-    })
-}
-
-exports.getUser = async (req, res) => {
-    const { id } = req.params
-    const user = await User.findById(id)
-
-    if (user) {
-        return res.status(200).json({
-            message: 'success',
-            data: user
-        })
-    } else {
-        return res.status(400).json({
-            message: 'failed',
-            data: 'user not found'
-        })
-    }
-}
-
-exports.getUsers = async (req, res) => {
-    const users = await User.find()
-
-    if (users) {
-        return res.status(200).json({
-            status: 'success',
-            data: users
-        })
-    }else{
-        return res.status(400).json({
-            status: 'failed',
-            message:'somethinf wents wrong'
-        })
-    }
+module.exports = {
+    register
 }
