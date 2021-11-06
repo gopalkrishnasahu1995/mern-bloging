@@ -1,12 +1,15 @@
-const nodemailer = require('../config/nodemailer.config');
+const sendGrid = require('../config/sendgrid.config');
 const template = require('../utils/mailtemplates');
+const nodemailer = require('../config/nodemailer.config')
 
 exports.sendEmail = async (email, type, host, data, token) => {
   let result;
   let response;
   try {
     const message = prepareTemplate(type, host, data, token);
+    // response = await sendGrid.sendEmail(email, message);
     response = await nodemailer.sendEmail(email, message);
+
   } catch (error) {
     console.log(error)
   }
@@ -36,7 +39,7 @@ const prepareTemplate = (type, host, data, token) => {
       message = template.confirmResetPasswordEmail();
       break;
 
-    case 'signup':
+    case 'register':
       message = template.signupEmail(token);
       break;
 

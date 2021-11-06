@@ -1,0 +1,88 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "KSoft Blogging API",
+    "description": "API for Building KSoft Blog Website created by <b>{developers}</b> Ashok and Gopal using nodejs and expressjs"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth EndPoints"
+    },
+    {
+      "name": "Posts",
+      "description": "Post EndPoints"
+    },
+    {
+      "name": "Profile",
+      "description": "Profile EndPoints"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "description": "Value: Bearer ",
+      "in": "header",
+      "scheme": "bearer"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterModel"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    }
+  },
+  "definitions": {
+    "RegisterModel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Ashok Sahu"
+        },
+        "account": {
+          "type": "string",
+          "example": "kanhasahu955902@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "kanhasahu#1111"
+        }
+      },
+      "required": [
+        "name",
+        "account",
+        "password"
+      ]
+    }
+  }
+}

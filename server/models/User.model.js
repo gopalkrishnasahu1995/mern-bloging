@@ -13,6 +13,9 @@ const UserSchema = new Schema({
         trim:true,
         unique:true
     },
+    verificationCode: {
+        type: Number,
+    },
     password:{
         type:String,
         required:[true,'password is required'],

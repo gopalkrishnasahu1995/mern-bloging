@@ -13,12 +13,16 @@ const compress = require("compression");
 const rateLimit = require('express-rate-limit')
 const mongoSanitize = require('express-mongo-sanitize')
 const MemoryStore = require("memorystore")(session);
+const swaggerUi = require("swagger-ui-express");
 
+const swaggerFile = require("./swagger_output.json");
 
 const app = express();
 
 const { connectdb } = require("./server/config/database.config");
-const routes = require('./server/routers/routes')
+const routes = require('./server/routers/routes');
+const { StatusCodes } = require("http-status-codes");
+
 //environments
 const PORT = process.env.PORT || 8989;
 const env = process.env.NODE_ENV;
@@ -41,6 +45,7 @@ app.use(paginate.middleware(process.env.LIMIT, process.env.MAX_LIMIT))
 
 // Limit requests from same API
 const limiter = rateLimit({
+  code:StatusCodes.TOO_MANY_REQUESTS,
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!'
@@ -75,6 +80,9 @@ app.use(
 //routes
 app.use(routes)
 
+//swagger setup
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 //static file setup
 if (env === "production") {
   app.use(cors());
@@ -95,6 +103,8 @@ if (env === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
+
+
 
 //server setup
 app.listen(PORT, () => {

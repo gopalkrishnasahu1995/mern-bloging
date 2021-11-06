@@ -1,8 +1,8 @@
 const options = {
-    openapi: string,          // By default is null
-    language: string,         // By default is 'en-US'
-    disableLogs: boolean,     // By default is false
-    disableWarnings: boolean // By default is false
+    openapi: null,          // By default is null
+    language: 'en-US',         // By default is 'en-US'
+    disableLogs: false,     // By default is false
+    disableWarnings: false // By default is false
 }
 const swaggerAutogen = require('swagger-autogen')(options);
 
@@ -44,15 +44,15 @@ const doc = {
         //models with required fields
         RegisterModel:{
             $name:"Ashok Sahu",
-            $email:"ashoksahu1105@gmail.com",
-            $password:'password'
+            $account:"kanhasahu955902@gmail.com",
+            $password:'kanhasahu#1111'
         }
     },          // by default: empty object
     components: {}            // by default: empty object (OpenAPI 3.x)
 };
 
 const outputFile = './swagger_output.json';
-const endpointsFiles = ['./server/routers/index.js'];
+const endpointsFiles = ['./server/routers/routes.js'];
 
 /* NOTE: if you use the express Router, you must pass in the 
    'endpointsFiles' only the root file where the route starts,

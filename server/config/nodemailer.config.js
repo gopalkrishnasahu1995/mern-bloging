@@ -1,20 +1,34 @@
 const nodemailer = require('nodemailer');
-const path = require('path')
+const { OAuth2Client } = require('google-auth-library')
+const OAUTH_PLAYGROUND = 'https://developers.google.com/oauthplayground'
 
-exports.sendEmail = (recipient, message) => {
+const CLIENT_ID = `${process.env.MAIL_CLIENT_ID}`
+const CLIENT_SECRET = `${process.env.MAIL_CLIENT_SECRET}`
+const REFRESH_TOKEN = `${process.env.MAIL_REFRESH_TOKEN}`
+const SENDER_MAIL_ADDRESS = `${process.env.SENDER_EMAIL_ADDRESS}`
+const SENDER_PASSWORD = `${process.env.SENDER_EMAIL_PASSWORD}`
+
+
+exports.sendEmail = async (recipient, message) => {
+    const oAuthClient = new OAuth2Client(
+        CLIENT_ID, CLIENT_SECRET, OAUTH_PLAYGROUND
+    )
+
+    oAuthClient.setCredentials({ refresh_token: REFRESH_TOKEN })
+    const access_token = await oAuthClient.getAccessToken()
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         host: process.env.NODEMAILER_HOST,
         port: process.env.NODEMAILER_PORT,
         secure: false,
         auth: {
-            type:'OAuth2',
-            user: "ashoksahu1105@gmail.com",
-            pass: "ashok$1111",
-            clientId:'',
-            clientSecret:'',
-            refreshToken:'',
-            accessToken:''
+            type: 'OAuth2',
+            user: SENDER_MAIL_ADDRESS,
+            pass: SENDER_PASSWORD,
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: access_token
         },
         tls: {
             rejectUnauthorized: false,
@@ -22,19 +36,14 @@ exports.sendEmail = (recipient, message) => {
     });
 
     const data = {
-        from: `Bakerywala.com <${process.env.NODEMAILER_SENDER_MAIL}>`,
+        from: `Bakerywala.com <${SENDER_MAIL_ADDRESS}>`,
         to: recipient,
         subject: `${message.subject}`,
         text: `${message.text}`,
-        html: `${message.html}`,
-        // attachments: [
-        //     { filename: 'images/1.JPG', path: path.resolve(__dirname,'../images/1.jpg') } 
-        // ],
+        html: `${message.html}`
     };
 
-    transporter.sendMail(data, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-    });
+    await transporter.sendMail(data)
+        .then(result => console.log(result))
+        .catch(err => console.log(err))
 };
