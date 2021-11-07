@@ -11,14 +11,6 @@
     {
       "name": "Auth",
       "description": "Auth EndPoints"
-    },
-    {
-      "name": "Posts",
-      "description": "Post EndPoints"
-    },
-    {
-      "name": "Profile",
-      "description": "Profile EndPoints"
     }
   ],
   "schemes": [

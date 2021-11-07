@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { register } = require('../../controllers/User.controller')
+const { register, activeUser } = require('../../controllers/User.controller')
 const { validRegister, isRequestValidated } = require('../../validators/auth.validator')
 const { setHeaders } = require('../../middlewares/headers')
 
@@ -13,5 +13,7 @@ router.post('/register', validRegister,
     } */
     await register(req.body, "user", res);
   })
+
+  
 
 module.exports = router;

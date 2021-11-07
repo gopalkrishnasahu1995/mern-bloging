@@ -22,14 +22,6 @@ const doc = {
             name: 'Auth',         // Tag name
             description: 'Auth EndPoints',  // Tag description
         },
-        {
-            name: 'Posts',         // Tag name
-            description: 'Post EndPoints',  // Tag description
-        },
-        {
-            name: 'Profile',         // Tag name
-            description: 'Profile EndPoints',  // Tag description
-        },
     ],
     securityDefinitions: {
         Authorization: {

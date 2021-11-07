@@ -2,6 +2,7 @@ require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const colors = require("colors");
+const passport = require("passport");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require('helmet');
@@ -42,6 +43,13 @@ app.use((req, res, next) => {
   next();
 });
 app.use(paginate.middleware(process.env.LIMIT, process.env.MAX_LIMIT))
+
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport Config
+require('./server/config/passport.config')(passport);
+
 
 // Limit requests from same API
 const limiter = rateLimit({
