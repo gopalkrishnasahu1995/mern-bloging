@@ -1,18 +1,21 @@
 import * as registerType from './constants'
 import axios from '../../config/axios'
 
-export const Register = (name, email, password) => async (dispatch) => {
+export const Register = (name, account, password) => async (dispatch) => {
     try {
       dispatch({ type: registerType.REGISTER_START });
       const registerdata = {
         name,
-        email,
+        account,
         password,
       };
+
+      console.log(registerdata)
+
       await axios
-        .post("/user/createUser", registerdata)
+        .post("/auth/register", registerdata)
         .then((res) => {
-          const data = res.data.data;
+          const data = res.data
           dispatch({
             type: registerType.REGISTER_SUCCESS,
             payload: data,
@@ -21,10 +24,9 @@ export const Register = (name, email, password) => async (dispatch) => {
     } catch (error) {
       dispatch({
         type: registerType.REGISTER_FAILED,
-        payload:error.response.data.message
-        //   error.response && error.response.data.error
-        //     ? error.response
-        //     : error.message,
+        payload:error.response && error.response.data.error
+            ? error.response
+            : error.message,
       });
     }
   };

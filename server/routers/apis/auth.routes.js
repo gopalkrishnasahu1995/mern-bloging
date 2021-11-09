@@ -14,6 +14,15 @@ router.post('/register', validRegister,
     await register(req.body, "user", res);
   })
 
-  
+router.post('/active', async (req, res) => {
+  /*  #swagger.tags = ['Auth']
+      #swagger.parameters['obj'] = {
+            in: 'body',
+            required: true,
+            schema: { $ref: "#/definitions/RegisterModel" }
+    } */
+  await activeUser(req.body, res)
+})
+
 
 module.exports = router;

@@ -51,6 +51,25 @@
         ],
         "responses": {}
       }
+    },
+    "/auth/active": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterModel"
+            }
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {

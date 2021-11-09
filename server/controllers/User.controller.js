@@ -33,14 +33,7 @@ const register = asyncHandler(async (data, role, res) => {
         }
 
         const passwordHash = await bcrypt.hash(data.password, 12)
-        const code = crypto.randomInt(100000, 1000000);
-
-        const newUser = new User({
-            ...data,
-            password: passwordHash,
-            verificationCode: code,
-            role
-        })
+        // const code = crypto.randomInt(100000, 1000000);
 
         const token = generateToken(data)
         if (validPhone(data.account)) {
@@ -70,6 +63,7 @@ const register = asyncHandler(async (data, role, res) => {
 
 //user active
 const activeUser = asyncHandler(async (req, res) => {
+    
 
 })
 
@@ -182,25 +176,6 @@ const facebookLogin = (req, res) => {
     );
 };
 
-const sendOtp = (req, res) => {
-    TwilioSms.verify
-        .services(client.serviceID)
-        .verifications.create({
-            to: `+${req.query.phonenumber}`,
-            channel: req.query.channel,
-        })
-        .then((data) => res.status(200).send(data));
-};
-
-const verifyOtp = (req, res) => {
-    TwilioSms.verify
-        .services(client.serviceID)
-        .verificationChecks.create({
-            to: `+${req.query.phonenumber}`,
-            code: req.query.code,
-        })
-        .then((data) => res.status(200).send(data));
-};
 //check email exist or not in database
 const validateEmail = async (email) => {
     let user = await User.findOne({ email });

@@ -36,7 +36,7 @@ exports.sendEmail = async (recipient, message) => {
     });
 
     const data = {
-        from: `Bakerywala.com <${SENDER_MAIL_ADDRESS}>`,
+        from: `S.K Bakery <${SENDER_MAIL_ADDRESS}>`,
         to: recipient,
         subject: `${message.subject}`,
         text: `${message.text}`,
