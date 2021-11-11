@@ -1,4 +1,5 @@
 @import '~antd/dist/antd.css';
+@import './themes/colors';
 
 body {
     margin: 0;
@@ -7,5 +8,6 @@ body {
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    background: #f7f4f3;
+    background:$primary;
 }
+

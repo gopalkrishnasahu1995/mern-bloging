@@ -1,4 +1,4 @@
-import * as registerType from './constants'
+import * as registerType from './auth.constants'
 
 const initialState = {
     error: "",

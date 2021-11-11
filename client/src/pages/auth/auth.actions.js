@@ -1,4 +1,4 @@
-import * as registerType from './constants'
+import * as registerType from './auth.constants'
 import axios from '../../config/axios'
 
 export const Register = (name, account, password) => async (dispatch) => {

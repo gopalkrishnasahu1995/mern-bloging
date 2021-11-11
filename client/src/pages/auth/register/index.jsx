@@ -2,8 +2,9 @@ import React from 'react'
 import { Form, Input, Button, Checkbox, Row, Col, Divider, Image } from 'antd';
 import styles from './index.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
-import * as RegisterAction from './registerActions'
-import RegImg from '../../assets/images/remote-team.svg'
+import * as RegisterAction from '../auth.actions'
+import RegImg from '../../../assets/images/remote-team.svg'
+import { UserOutlined, LockOutlined, MailOutlined  } from '@ant-design/icons';
 
 const formItemLayout = {
     labelCol: {
@@ -53,7 +54,9 @@ const RegisterPage = (props) => {
                                 hasFeedback
                                 name='username'
                                 rules={[{ required: true, message: 'Please enter your fullName' }]}>
-                                <Input placeholder='Enter Your Name'/>
+                                <Input placeholder='Enter Your Name'
+                                 prefix={<UserOutlined className="site-form-item-icon" />}
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={24}>
@@ -62,7 +65,9 @@ const RegisterPage = (props) => {
                                 tooltip="please enter either email or phone no."
                                 hasFeedback
                                 rules={[{ required: true, message: 'Please input your email or Phone No.' }]}>
-                                <Input placeholder="enter your email or phone No." />
+                                <Input placeholder="enter your email or phone No." 
+                                 prefix={<MailOutlined className="site-form-item-icon" />}
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={24}>
@@ -72,6 +77,7 @@ const RegisterPage = (props) => {
                                 rules={[{ required: true, message: 'Please input your password!' }]}>
                                 <Input.Password type="password"
                                     placeholder="Password"
+                                    prefix={<LockOutlined className="site-form-item-icon" />}
                                 />
                             </Form.Item>
                             <Form.Item

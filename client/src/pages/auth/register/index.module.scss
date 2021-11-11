@@ -1,3 +1,5 @@
+@import '../../../assets/styles/themes/colors';
+
 .reg {
     width: 75%;
     height: 85vh;
@@ -17,5 +19,5 @@
 
 .reg_divider {
     height: 100%;
-    background: rgb(225, 225, 240);
+    background:$primary;
 }
