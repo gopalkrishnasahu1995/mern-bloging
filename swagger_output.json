@@ -61,10 +61,10 @@
         "parameters": [
           {
             "name": "obj",
-            "in": "body",
+            "in": "headers",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/RegisterModel"
+              "$ref": "#/definitions/bearer"
             }
           }
         ],

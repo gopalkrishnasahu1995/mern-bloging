@@ -41,14 +41,14 @@ exports.forgotPassword = (token) => {
   return message
 };
 
-exports.signupEmail = (token) => {
+exports.signupEmail = (data,token) => {
   const message = {
     subject: "Account Activation Link",
-    text: `Hi ${token}! Thank you for creating an account with us!.`,
+    text: `Hi ${data}! Thank you for creating an account with us!.`,
     html: `<div style={border:'1px solid red';padding:'10px';height:'200px';width:'200px'}>
     <h1 > Please Click The Link To Active </h1>
     <hr/>
-    <p>${process.env.CLIENT_URI}/users/activate/${token} </p>
+    <p>${process.env.CLIENT_URI}/user/active/${token} </p>
     <p>This Email contains Sensetive Info</p>
     <p>${process.env.CLIENT_URI}</p>
      </div>`,

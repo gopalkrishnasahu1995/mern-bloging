@@ -1,8 +1,8 @@
 import React from 'react'
 import { Form, Input, Button, Checkbox, Row, Col, Divider, Image } from 'antd';
-import forgotImg from '../../../assets/images/forgot.svg'
+import resetImg from '../../../assets/images/reset.svg'
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
     return (
 
         <Row gutter={24}>
@@ -13,14 +13,14 @@ const ForgotPassword = () => {
                 <Row gutter={24}>
                     <Col span={24}>
                         <Image width={400}
-                            alt='forgotpassword'
+                            alt='resetpassword'
                             height={400}
                             preview={false}
-                            src={forgotImg}
+                            src={resetImg}
                         />
                     </Col>
                     <Col span={24}>
-                    Forgot your password?
+                    Reset your password?
                     </Col>
                     <Col span={24}>
                     We received a request to reset your password.
@@ -33,13 +33,7 @@ const ForgotPassword = () => {
             If you did make this request just click the button below:
             </Col>
             <Col span={24}>
-            <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        
-                                    >
-                                        FotgotPassword
-                                    </Button>
+            
             </Col>
         </Row>
 
@@ -48,4 +42,5 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword
+export default ResetPassword
+

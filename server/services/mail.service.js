@@ -40,7 +40,7 @@ const prepareTemplate = (type, host, data, token) => {
       break;
 
     case 'register':
-      message = template.signupEmail(token);
+      message = template.signupEmail(data,token);
       break;
 
     case 'newsletter-subscription':

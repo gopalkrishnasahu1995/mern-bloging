@@ -14,12 +14,23 @@ router.post('/register', validRegister,
     await register(req.body, "user", res);
   })
 
-router.post('/active', async (req, res) => {
+  
+router.post('/active', setHeaders,async (req, res) => {
   /*  #swagger.tags = ['Auth']
       #swagger.parameters['obj'] = {
-            in: 'body',
+            in: 'headers',
             required: true,
-            schema: { $ref: "#/definitions/RegisterModel" }
+            schema: { $ref: "#/definitions/bearer"}
+    } */
+  await activeUser(req, res)
+})
+
+router.post('/login', setHeaders,async (req, res) => {
+  /*  #swagger.tags = ['Auth']
+      #swagger.parameters['obj'] = {
+            in: 'headers',
+            required: true,
+            schema: { $ref: "#/definitions/bearer"}
     } */
   await activeUser(req.body, res)
 })

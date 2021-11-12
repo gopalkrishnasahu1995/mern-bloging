@@ -2,55 +2,54 @@ const User = require('../models/User.model')
 const asyncHandler = require('../middlewares/async.middleware')
 const mailService = require('../services/mail.service')
 const smsService = require("../config/twilio.config");
-const { generateToken } = require('../utils/jwt')
+const { generateToken, verifyToken, decodeToken } = require('../utils/jwt')
+const { errorHandler } = require('../helpers/dbErrorHandler')
+
 const expressJwt = require("express-jwt");
 const _ = require("lodash");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
-
 const {
     ReasonPhrases,
     StatusCodes,
     getReasonPhrase,
-    getStatusCode,
 } = require('http-status-codes');
 const bcrypt = require('bcrypt')
 const crypto = require("crypto");
 
-
 //user register
 const register = asyncHandler(async (data, role, res) => {
     try {
-        // check exit user
-        const userExists = await validateEmail(data.account);
+        // check exist user
+        const { account } = data
+        const userExists = await User.findOne({ account })
+
         if (userExists) {
-            res.status(StatusCodes.BAD_REQUEST).json({
+            return res.status(StatusCodes.BAD_REQUEST).json({
                 error: getReasonPhrase(StatusCodes.BAD_REQUEST),
                 message: 'User is already exists',
                 status: false,
-                success: false
+                success: false,
             });
+        } else {
+            const token = generateToken(data)
+            if (validPhone(data.account)) {
+                await smsService.sendSms(data.account, 'verification code', token)
+                return res.status(StatusCodes.OK).json({
+                    success: true,
+                    status: ReasonPhrases.OK,
+                    message: 'Account Activation Link Sent To Your Phone',
+                })
+            } else if (validEmail(data.account)) {
+                await mailService.sendEmail(data.account, "register", null, `${data.name}`, token)
+                return res.status(StatusCodes.OK).json({
+                    success: true,
+                    status: ReasonPhrases.OK,
+                    message: 'Account Activation Link Sent To Your Email',
+                })
+            }
         }
 
-        const passwordHash = await bcrypt.hash(data.password, 12)
-        // const code = crypto.randomInt(100000, 1000000);
-
-        const token = generateToken(data)
-        if (validPhone(data.account)) {
-            await smsService.sendSms(data.account, 'verification code', token)
-            res.status(StatusCodes.OK).json({
-                success: true,
-                status: ReasonPhrases.OK,
-                message: 'Account Activation Link Sent To Your Phone',
-            })
-        } else if (validEmail(data.account)) {
-            await mailService.sendEmail(data.account, "register", null, null, token)
-            res.status(StatusCodes.OK).json({
-                success: true,
-                status: ReasonPhrases.OK,
-                message: 'Account Activation Link Sent To Your Email',
-            })
-        }
 
     } catch (err) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -60,13 +59,70 @@ const register = asyncHandler(async (data, role, res) => {
     }
 })
 
-
 //user active
 const activeUser = asyncHandler(async (req, res) => {
-    
+    const authorization = req.headers['authorization'];
+    if (!authorization) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+            success: false,
+            status: ReasonPhrases.UNAUTHORIZED,
+            mode: req.mode,
+            message: 'User Not Authorized',
+        })
+    } else {
+        const token = authorization.split(" ")[1];
+        const tokenVerify = verifyToken(token, process.env.JWT_SECRET);
+        try {
+            if (tokenVerify) {
+                const { name, account, password } = decodeToken(token);
+                const hashedPassword = await bcrypt.hash(password, 16);
+                const code = crypto.randomInt(100000, 1000000);
 
+                const newUser = new User({
+                    name,
+                    account,
+                    password: hashedPassword,
+                    verificationCode:code
+                });
+                await newUser.save((err, user) => {
+                    if (err) {
+                        return res.status(StatusCodes.BAD_REQUEST).json({
+                            success: false,
+                            status: ReasonPhrases.BAD_REQUEST,
+                            mode: req.mode,
+                            message: errorHandler(err)
+                        })
+                    } else {
+                        return res.status(StatusCodes.CREATED).json({
+                            success: true,
+                            status: ReasonPhrases.CREATED,
+                            message: `Hi, ${name} Please Check Your Mail`,
+                            mode: req.mode,
+                            data: user
+                        })
+                    }
+                });
+            }
+        } catch (err) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+                message: err.message
+            });
+        }
+    }
 })
 
+//user login
+const login = asyncHandler(async (req, res) => {
+})
+
+//reset password
+const resetPassword = asyncHandler(async (req, res) => {
+})
+
+//forgot password
+const forgotPassword = asyncHandler(async (req, res) => {
+})
 
 // Google Login
 const googleLogin = (req, res) => {
@@ -120,6 +176,7 @@ const googleLogin = (req, res) => {
         });
 };
 
+//facebook login
 const facebookLogin = (req, res) => {
     console.log("FACEBOOK LOGIN REQ BODY", req.body);
     const { userID, accessToken } = req.body;
@@ -176,15 +233,6 @@ const facebookLogin = (req, res) => {
     );
 };
 
-//check email exist or not in database
-const validateEmail = async (email) => {
-    let user = await User.findOne({ email });
-    if (user) {
-        return true;
-    } else {
-        return false;
-    }
-};
 
 function validPhone(phone) {
     return /^(\+\d{1,3}[- ]?)?\d{10}$/g.test(phone)
@@ -205,5 +253,8 @@ const requireSignin = (req, res) => {
 
 module.exports = {
     register,
-    activeUser
+    activeUser,
+    login,
+    resetPassword,
+    forgotPassword,
 }

@@ -11,7 +11,7 @@ exports.connectdb = async () => {
         })
             .then(() => console.log("database connected successfully".bgGreen.black.bold))
     } catch (error) {
-        console.log(error.bgMagenta.red)
+        console.log(error)
         process.exit(1)
     }
 }
