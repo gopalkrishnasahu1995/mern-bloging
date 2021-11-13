@@ -32,7 +32,14 @@ const UserSchema = new Schema({
     role:{
         type:String,
         default:'user'
-    }
+    },
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+    },
+    passwordResetCode: {
+        type: String,
+    } 
 }, { timestamps: true })
 
 

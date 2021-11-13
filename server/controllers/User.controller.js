@@ -4,11 +4,12 @@ const mailService = require('../services/mail.service')
 const smsService = require("../config/twilio.config");
 const { generateToken, verifyToken, decodeToken } = require('../utils/jwt')
 const { errorHandler } = require('../helpers/dbErrorHandler')
-
 const expressJwt = require("express-jwt");
+const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
+
 const {
     ReasonPhrases,
     StatusCodes,
@@ -77,12 +78,11 @@ const activeUser = asyncHandler(async (req, res) => {
                 const { name, account, password } = decodeToken(token);
                 const hashedPassword = await bcrypt.hash(password, 16);
                 const code = crypto.randomInt(100000, 1000000);
-
                 const newUser = new User({
                     name,
                     account,
                     password: hashedPassword,
-                    verificationCode:code
+                    verificationCode: code
                 });
                 await newUser.save((err, user) => {
                     if (err) {
@@ -113,16 +113,93 @@ const activeUser = asyncHandler(async (req, res) => {
 })
 
 //user login
-const login = asyncHandler(async (req, res) => {
+const login = asyncHandler(async (data, res) => {
+    try {
+        let { account, password } = data;
+        const user = await User.findOne({ account });
+
+        if (!user) {
+            return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+                success: false,
+                status: ReasonPhrases.UNPROCESSABLE_ENTITY,
+                message: "Failed login attempt",
+                account: "User Not Found Please SignUp",
+            })
+        }
+
+        let isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+            let token = jwt.sign({
+                user_id: user._id,
+                role: user.role,
+                account: user.account,
+                name: user.name,
+            },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "7 days",
+                });
+
+            let profile = {
+                account: user.account,
+                role: user.role,
+                name: user.name,
+            };
+            let result = {
+                user: profile,
+                token: token,
+                expiresIn: 168,
+            };
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                status: ReasonPhrases.OK,
+                message: `Hi, ${user.name} Your Successfully signin with S.K Bakery`,
+                data: result
+            })
+        } else {
+            return res.status(StatusCodes.FORBIDDEN).json({
+                success: false,
+                status: ReasonPhrases.FORBIDDEN,
+                message: "Failed login attempt",
+                account: "Invalid Credentials",
+            })
+        }
+    } catch (err) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            error: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+            message: err.message
+        });
+    }
+
+
 })
 
 //reset password
 const resetPassword = asyncHandler(async (req, res) => {
+
+
 })
 
 //forgot password
 const forgotPassword = asyncHandler(async (req, res) => {
+
+
 })
+
+//password change
+const changePassword = asyncHandler(async (req, res) => {
+
+
+})
+
+//verify user
+const verifyUser  = asyncHandler(async (req, res) => {
+
+
+})
+
+
+
 
 // Google Login
 const googleLogin = (req, res) => {
@@ -176,7 +253,6 @@ const googleLogin = (req, res) => {
         });
 };
 
-//facebook login
 const facebookLogin = (req, res) => {
     console.log("FACEBOOK LOGIN REQ BODY", req.body);
     const { userID, accessToken } = req.body;
@@ -254,7 +330,9 @@ const requireSignin = (req, res) => {
 module.exports = {
     register,
     activeUser,
-    login,
     resetPassword,
     forgotPassword,
+    login,
+    verifyUser,
+    changePassword
 }

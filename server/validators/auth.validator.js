@@ -17,10 +17,6 @@ exports.validRegister = [
             .withMessage('invalid  mobile number'),
         check("account").isEmail().withMessage("Must be a valid email address"),
     ]),
-    // check('account').not().isEmpty().isString()
-    //     .custom((val) => /^(\+\d{1,3}[- ]?)?\d{10}$/g.test(val))
-    //     .withMessage('invalid  mobile number')
-    //     .bail().isEmail().withMessage("Must be a valid email address").bail(),
     check("password", "password is required").notEmpty(),
     check("password")
         .isLength({
@@ -32,7 +28,12 @@ exports.validRegister = [
 ];
 
 exports.validLogin = [
-    check("email").isEmail().withMessage("Must be a valid email address"),
+    oneOf([
+        check('account').not().isEmpty().isString()
+            .custom((val) => /^(\+\d{1,3}[- ]?)?\d{10}$/g.test(val))
+            .withMessage('invalid  mobile number'),
+        check("account").isEmail().withMessage("Must be a valid email address"),
+    ]),
     check("password", "password is required").notEmpty(),
     check("password")
         .isLength({

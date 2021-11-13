@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { register, activeUser } = require('../../controllers/User.controller')
-const { validRegister, isRequestValidated } = require('../../validators/auth.validator')
+const { register, activeUser, login } = require('../../controllers/User.controller')
+const { validRegister, validLogin,isRequestValidated } = require('../../validators/auth.validator')
 const { setHeaders } = require('../../middlewares/headers')
 
 router.post('/register', validRegister,
@@ -25,14 +25,14 @@ router.post('/active', setHeaders,async (req, res) => {
   await activeUser(req, res)
 })
 
-router.post('/login', setHeaders,async (req, res) => {
+router.post('/login', setHeaders,validLogin,isRequestValidated,async (req, res) => {
   /*  #swagger.tags = ['Auth']
       #swagger.parameters['obj'] = {
-            in: 'headers',
+            in: 'body',
             required: true,
             schema: { $ref: "#/definitions/bearer"}
     } */
-  await activeUser(req.body, res)
+  await login(req.body, res)
 })
 
 
