@@ -70,6 +70,25 @@
         ],
         "responses": {}
       }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginModel"
+            }
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {
@@ -91,6 +110,23 @@
       },
       "required": [
         "name",
+        "account",
+        "password"
+      ]
+    },
+    "LoginModel": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "type": "string",
+          "example": "kanhasahu955902@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "kanhasahu#1111"
+        }
+      },
+      "required": [
         "account",
         "password"
       ]

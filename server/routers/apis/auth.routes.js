@@ -30,7 +30,7 @@ router.post('/login', setHeaders,validLogin,isRequestValidated,async (req, res) 
       #swagger.parameters['obj'] = {
             in: 'body',
             required: true,
-            schema: { $ref: "#/definitions/bearer"}
+            schema: { $ref: "#/definitions/LoginModel"}
     } */
   await login(req.body, res)
 })

@@ -1,33 +1,36 @@
 import * as registerType from './auth.constants'
-import axios from '../../config/axios'
+import handleError from '../../utils/errorHandler'
+import handleSuccess from '../../utils/successHandler'
+
+import AuthRequests from '../../config/requests'
+
 
 export const Register = (name, account, password) => async (dispatch) => {
-    try {
-      dispatch({ type: registerType.REGISTER_START });
-      const registerdata = {
-        name,
-        account,
-        password,
-      };
-
-      console.log(registerdata)
-
-      await axios
-        .post("/auth/register", registerdata)
-        .then((res) => {
-          const data = res.data
-          dispatch({
-            type: registerType.REGISTER_SUCCESS,
-            payload: data,
-          });
-        });
-    } catch (error) {
-      dispatch({
-        type: registerType.REGISTER_FAILED,
-        payload:error.response && error.response.data.error
-            ? error.response
-            : error.message,
-      });
-    }
-  };
-  
+  try {
+    dispatch({ type: registerType.REGISTER_START });
+    const registerdata = {
+      name,
+      account,
+      password,
+    };
+    await AuthRequests.auth().signup(registerdata)
+      .then(res => {
+        console.log(res, 'register user response')
+        const data = res.data
+        dispatch({
+          type: registerType.REGISTER_SUCCESS,
+          payload: data.message
+        })
+        handleSuccess(res, dispatch, 'Registration success')
+      })
+  } catch (error) {
+    console.log(error.response, 'error while fetch')
+    dispatch({
+      type: registerType.REGISTER_FAILED,
+      payload: error.response && error.response.data.error
+        ? error.response
+        : error.message,
+    });
+    handleError(error, dispatch, 'Failed while register')
+  }
+};

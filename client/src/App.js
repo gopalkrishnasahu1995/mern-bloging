@@ -1,15 +1,20 @@
 import React, { lazy, Suspense } from 'react'
-import { Route,Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import Notification from './components/Message'
+import { ToastContainer } from 'react-toastify'
+
 
 const HomePage = lazy(() => import('./pages/homePage'));
 const RegisterPage = lazy(() => import('./pages/auth/register'));
 const LoginPage = lazy(() => import('./pages/auth/login'));
-const ForgotPage = lazy(()=> import('./pages/auth/forgotPassword'))
-const ResetPage = lazy(()=> import('./pages/auth/resetPassword'))
+const ForgotPage = lazy(() => import('./pages/auth/forgotPassword'))
+const ResetPage = lazy(() => import('./pages/auth/resetPassword'))
 
 const App = () => {
   return (
     <Suspense fallback={() => (<div>...loading</div>)}>
+      <Notification />
+      <ToastContainer />
       <Switch>
         <Route exact path='/' component={HomePage} />
         <Route exact path='/register' component={RegisterPage} />

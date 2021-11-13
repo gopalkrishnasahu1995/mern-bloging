@@ -38,6 +38,10 @@ const doc = {
             $name:"Ashok Sahu",
             $account:"kanhasahu955902@gmail.com",
             $password:'kanhasahu#1111'
+        },
+        LoginModel:{
+            $account:"kanhasahu955902@gmail.com",
+            $password:'kanhasahu#1111'
         }
     },          // by default: empty object
     components: {}            // by default: empty object (OpenAPI 3.x)
