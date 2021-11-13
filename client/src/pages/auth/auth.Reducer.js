@@ -18,6 +18,7 @@ const registerReducer = (state = initialState, action) => {
             return {
                 data: action.payload,
                 success: true,
+                loading:false
             };
         case registerType.REGISTER_FAILED:
             return {

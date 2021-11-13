@@ -1,19 +1,4 @@
 @import '~antd/dist/antd.css';
 @import './themes/colors';
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-@import 'react-toastify/dist/ReactToastify.css';
-
-body {
-
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: $primary;
-}
-
-* {
-    font-family: 'Poppins', sans-serif;
-}
+@import './themes/variables';
+@import './customs/fonts';

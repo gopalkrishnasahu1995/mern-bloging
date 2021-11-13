@@ -8,7 +8,7 @@ const rootReducer = (history) =>
     combineReducers({
         router: connectRouter(history),
         notifications,
-        register: registerReducer,
+        registerState: registerReducer,
     });
 
 export default rootReducer;

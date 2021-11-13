@@ -4,7 +4,7 @@ import logger from "redux-logger";
 import { createBrowserHistory } from 'history'
 import { routerMiddleware } from 'connected-react-router'
 
-import rootReducer from './rootReducer'
+import rootReducer from './reducer'
 
 export const history = createBrowserHistory()
 
@@ -18,5 +18,12 @@ const initialState = {
 
 const middleware = [logger, Thunk];
 
-const store = createStore(rootReducer(history), initialState, compose(applyMiddleware(routerMiddleware(history),...middleware)));
+const store = createStore(rootReducer(history), initialState, compose(applyMiddleware(routerMiddleware(history), ...middleware)));
+if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept('./reducer', () => {
+        const nextRootReducer = require('./reducer').default; // eslint-disable-line global-require
+        store.replaceReducer(nextRootReducer(history));
+    });
+}
 export default store;

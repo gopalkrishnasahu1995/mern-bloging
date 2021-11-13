@@ -1,43 +1,21 @@
 import React from 'react'
 import { Form, Input, Button, Checkbox, Row, Col, Divider, Image } from 'antd';
 import styles from './index.module.scss'
-import { useSelector, useDispatch } from 'react-redux';
-import * as RegisterAction from '../auth.actions'
+import { connect } from 'react-redux';
 import RegImg from '../../../assets/images/remote-team.svg'
-import { UserOutlined, LockOutlined, MailOutlined  } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import actions from '../../../redux/actions';
+import { formItemLayout } from './constants'
 
-const formItemLayout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 8,
-        },
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 16,
-        },
-    },
-};
-
-const RegisterPage = (props) => {
+const RegisterPage = ({ registerState, registerAction }) => {
     const [form] = Form.useForm()
-
-    const registerData = useSelector((state) => state.register)
-    const dispatch = useDispatch()
-
+    const { error, loading, userInfo, success, data } = registerState
     const onFinish = (values) => {
         let name, account, password;
         name = values.username;
         account = values.account;
         password = values.password
-        dispatch(RegisterAction.Register(name, account, password));
-        console.log(values)
+        registerAction(name, account, password)
     }
 
     return (
@@ -55,7 +33,7 @@ const RegisterPage = (props) => {
                                 name='username'
                                 rules={[{ required: true, message: 'Please enter your fullName' }]}>
                                 <Input placeholder='Enter Your Name'
-                                 prefix={<UserOutlined className="site-form-item-icon" />}
+                                    prefix={<UserOutlined className="site-form-item-icon" />}
                                 />
                             </Form.Item>
                         </Col>
@@ -65,8 +43,8 @@ const RegisterPage = (props) => {
                                 tooltip="please enter either email or phone no."
                                 hasFeedback
                                 rules={[{ required: true, message: 'Please input your email or Phone No.' }]}>
-                                <Input placeholder="enter your email or phone No." 
-                                 prefix={<MailOutlined className="site-form-item-icon" />}
+                                <Input placeholder="enter your email or phone No."
+                                    prefix={<MailOutlined className="site-form-item-icon" />}
                                 />
                             </Form.Item>
                         </Col>
@@ -114,7 +92,7 @@ const RegisterPage = (props) => {
                         </Col>
                     </Row>
                 </Col>
-                <Divider type='vertical' className={styles.reg_divider}/>
+                <Divider type='vertical' className={styles.reg_divider} />
                 <Col xs={24} sm={24} md={12} lg={11} xl={11}>
                     <Image width={400}
                         alt='signup'
@@ -128,4 +106,10 @@ const RegisterPage = (props) => {
     )
 }
 
-export default RegisterPage
+const mapStateToProps = state => {
+    return {
+        registerState: state.registerState,
+    };
+};
+
+export default connect(mapStateToProps, actions)(RegisterPage);
